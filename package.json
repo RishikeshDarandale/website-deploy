@@ -1,0 +1,35 @@
+{
+  "name": "s3-publish",
+  "version": "1.0.0",
+  "description": "A simple utility to to publish website to aws s3 bucket",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "aws",
+    "s3",
+    "static",
+    "website",
+    "publish",
+    "node",
+    "cli"
+  ],
+  "author": "Rishikesh Darandale <Rishikesh.Darandale@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.296.0",
+    "chalk": "^2.4.1",
+    "clear": "^0.1.0",
+    "clui": "^0.3.6",
+    "commander": "^2.17.1",
+    "figlet": "^1.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.4.0",
+    "eslint-config-google": "^0.9.1",
+    "husky": "^0.14.3",
+    "lint-staged": "^7.2.2",
+    "prettier": "^1.14.2"
+  }
+}
