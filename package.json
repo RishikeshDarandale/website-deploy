@@ -37,5 +37,8 @@
     "lint": "eslint --fix",
     "precommit": "lint-staged",
     "prepush": "lint-staged"
+  },
+  "bin": {
+    "s3-publish": "./index.js"
   }
 }
