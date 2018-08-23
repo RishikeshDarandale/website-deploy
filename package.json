@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "A simple utility to to publish website to aws s3 bucket",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "keywords": [
     "aws",
     "s3",
@@ -31,5 +28,14 @@
     "husky": "^0.14.3",
     "lint-staged": "^7.2.2",
     "prettier": "^1.14.2"
+  },
+  "engines": {
+    "node": ">=8.11.2",
+    "npm": ">=5.6.0"
+  },
+  "scripts": {
+    "lint": "eslint ./functions --fix",
+    "precommit": "lint-staged",
+    "prepush": "lint-staged"
   }
 }
