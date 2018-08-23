@@ -34,7 +34,7 @@
     "npm": ">=5.6.0"
   },
   "scripts": {
-    "lint": "eslint ./functions --fix",
+    "lint": "eslint --fix",
     "precommit": "lint-staged",
     "prepush": "lint-staged"
   }
