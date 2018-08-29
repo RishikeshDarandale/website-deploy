@@ -23,17 +23,21 @@
     "figlet": "^1.2.0"
   },
   "devDependencies": {
+    "ava": "1.0.0-beta.7",
     "eslint": "^5.4.0",
     "eslint-config-google": "^0.9.1",
     "husky": "^0.14.3",
     "lint-staged": "^7.2.2",
-    "prettier": "^1.14.2"
+    "mock-fs": "^4.6.0",
+    "prettier": "^1.14.2",
+    "sinon": "^6.1.5"
   },
   "engines": {
     "node": ">=8.11.2",
     "npm": ">=5.6.0"
   },
   "scripts": {
+    "test": "ava --verbose",
     "lint": "eslint --fix",
     "precommit": "lint-staged",
     "prepush": "lint-staged"

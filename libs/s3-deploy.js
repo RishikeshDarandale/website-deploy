@@ -116,7 +116,7 @@ class S3Deploy {
         );
       }
     } else {
-      throw new Error('The source directory ' + directoryPath + 'not found.');
+      throw new Error('The source directory ' + directoryPath + ' not found.');
     }
   }
 

@@ -4,20 +4,21 @@ const program = require('commander');
 const clear = require('clear');
 const chalk = require('chalk');
 const figlet = require('figlet');
-const package = require('./package.json');
+const packageJson = require('./package.json');
 const AWS = require('aws-sdk');
 const S3Deploy = require('./libs/s3-deploy.js');
 const Logger = require('./libs/logger.js');
 const logger = new Logger();
+const CacheInvalidate = require('./libs/cf-invalidate.js');
 
 // Lets clear the console
 clear();
 
 // banner of the cli
 console.info(
-  chalk.yellow(figlet.textSync(package.name, {horizontalLayout: 'full'}))
+  chalk.yellow(figlet.textSync(packageJson.name, {horizontalLayout: 'full'}))
 );
-console.info(chalk.cyan('Version: ' + package.version));
+console.info(chalk.cyan('Version: ' + packageJson.version));
 
 /**
  * callback to collect the multiple instances of same argument options
@@ -32,7 +33,7 @@ function collect(val, memo) {
 }
 
 // argument parser
-program.version(package.version).description(package.description);
+program.version(packageJson.version).description(packageJson.description);
 
 // deploy command
 program
@@ -70,15 +71,32 @@ program
 program
   .command('invalidate <cloudfrontId>')
   .description('Invalidates the cloudfront cache')
+  .option('--profile <profileName>', 'AWS credential profile name')
+  .option('--region <regionName>', 'AWS region name', 'us-east-1')
   .option(
     '--path [value]',
     'A repeatable value of path that needs the invalidation',
     collect,
     []
   )
+  .option('--debug [flag]', 'Log extra debug information')
   .action(function(cloudfrontId, options) {
-    console.log('Cloudfront Id: %j', cloudfrontId);
-    console.log('path: %j', options.path);
+    logger.info('Invalidating the cache for cloudfront id: ' + cloudfrontId);
+    AWS.config.update({region: options.region});
+    if (options.profile !== undefined) {
+      let credentials = new AWS.SharedIniFileCredentials({
+        profile: options.profile,
+      });
+      AWS.config.credentials = credentials;
+    }
+    let cloudfront = new AWS.CloudFront();
+    let cacheInvalidate = new CacheInvalidate(cloudfront);
+    try {
+      cacheInvalidate.invalidate(cloudfrontId, options);
+    } catch (exception) {
+      logger.error(exception);
+      process.exit(1);
+    }
   });
 
 // parse the command line arguments
