@@ -1,5 +1,5 @@
 {
-  "name": "s3-publish",
+  "name": "website-deploy",
   "version": "1.0.0",
   "description": "A simple utility to to publish website to aws s3 bucket",
   "main": "index.js",
@@ -43,6 +43,6 @@
     "prepush": "lint-staged"
   },
   "bin": {
-    "s3-publish": "./index.js"
+    "website-deploy": "./index.js"
   }
 }

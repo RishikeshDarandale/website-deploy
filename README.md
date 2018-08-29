@@ -1,8 +1,9 @@
-# s3-publish
+# website-deploy
 
 A simple utility to deploy a static website to s3-bucket
 
-[![Known Vulnerabilities](https://snyk.io/test/github/RishikeshDarandale/s3-publish/badge.svg)](https://snyk.io/test/github/RishikeshDarandale/s3-publish)
+[![Known Vulnerabilities](https://snyk.io/test/github/RishikeshDarandale/website-deploy/badge.svg)](https://snyk.io/test/github/RishikeshDarandale/website-deploy)
+[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=RishikeshDarandale/website-deploy)](https://dependabot.com)
 
 # Pre-requisite
 
@@ -13,13 +14,13 @@ A simple utility to deploy a static website to s3-bucket
 ## Install globally
 
 ```console
-npm install --global s3-publish
+npm install --global website-deploy
 ```
 
 ## Install in project
 
 ```console
-npm install --save-dev s3-publish
+npm install --save-dev website-deploy
 ```
 
 # Usage
@@ -31,7 +32,7 @@ This utility has following sub-commands:
 This sub-command sync the provided source folder with AWS s3 bucket.
 
 ```console
-s3-publish deploy [options] <SOURCE_DIR> <S3_BUCKET_NAME>
+website-deploy deploy [options] <SOURCE_DIR> <S3_BUCKET_NAME>
 ```
 
 ### Options
@@ -57,7 +58,7 @@ Provide a AWS region Name
 This sub-command will invalidate the cloudfront cache
 
 ```console
-s3-publish invalidate-cache [options] <CLOUDFRONT_DISTRIBUTION_ID>
+website-deploy invalidate-cache [options] <CLOUDFRONT_DISTRIBUTION_ID>
 ```
 
 ### Options
@@ -69,7 +70,7 @@ A object path to be invalidated. This can be provided multiple times to specify 
 e.g.
 
 ```console
-s3-publish invalidate-cache <CLOUDFRONT_DISTRIBUTION_ID> --path "/index.html" --path "/error.html"
+website-deploy invalidate-cache <CLOUDFRONT_DISTRIBUTION_ID> --path "/index.html" --path "/error.html"
 ```
 
 `--debug [true|false]`
