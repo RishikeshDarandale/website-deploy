@@ -1,0 +1,9 @@
+test
+.npmrc
+.npmignore
+.gitignore
+.editorconfig
+.eslintrc.yml
+.lintstagedrc
+_config.yml
+
