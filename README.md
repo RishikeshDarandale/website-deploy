@@ -1,6 +1,6 @@
 # website-deploy
 
-A simple utility to deploy a static website to s3-bucket
+A simple utility to deploy a static website to [s3-bucket, ...]
 
 [![Known Vulnerabilities](https://snyk.io/test/github/RishikeshDarandale/website-deploy/badge.svg)](https://snyk.io/test/github/RishikeshDarandale/website-deploy)
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=RishikeshDarandale/website-deploy)](https://dependabot.com)
@@ -32,7 +32,7 @@ This utility has following sub-commands:
 This sub-command sync the provided source folder with AWS s3 bucket.
 
 ```console
-website-deploy deploy [options] <SOURCE_DIR> <S3_BUCKET_NAME>
+website-deploy s3 [options] <SOURCE_DIR> <S3_BUCKET_NAME>
 ```
 
 ### Options

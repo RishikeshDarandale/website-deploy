@@ -1,14 +1,14 @@
 {
   "name": "website-deploy",
   "version": "1.0.0",
-  "description": "A simple utility to to publish website to aws s3 bucket",
+  "description": "A simple utility to deploy a static website to [s3-bucket, ...]",
   "main": "index.js",
   "keywords": [
     "aws",
     "s3",
     "static",
     "website",
-    "publish",
+    "deploy",
     "node",
     "cli"
   ],

@@ -37,7 +37,7 @@ program.version(packageJson.version).description(packageJson.description);
 
 // deploy command
 program
-  .command('deploy <srcDirectory> <bucketName>')
+  .command('s3 <srcDirectory> <bucketName>')
   .description('Deploys the static website directory to s3 bucket with sync')
   .option('--profile <profileName>', 'AWS credential profile name')
   .option('--region <regionName>', 'AWS region name', 'us-east-1')
@@ -69,7 +69,7 @@ program
 
 // invalidate the cloudfront Cache
 program
-  .command('invalidate <cloudfrontId>')
+  .command('invalidate-cache <cloudfrontId>')
   .description('Invalidates the cloudfront cache')
   .option('--profile <profileName>', 'AWS credential profile name')
   .option('--region <regionName>', 'AWS region name', 'us-east-1')
