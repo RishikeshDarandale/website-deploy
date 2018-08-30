@@ -2,6 +2,7 @@
 
 A simple utility to deploy a static website to [s3-bucket, ...]
 
+[![CircleCI](https://circleci.com/gh/RishikeshDarandale/website-deploy.svg?style=svg)](https://circleci.com/gh/RishikeshDarandale/website-deploy)
 [![Known Vulnerabilities](https://snyk.io/test/github/RishikeshDarandale/website-deploy/badge.svg)](https://snyk.io/test/github/RishikeshDarandale/website-deploy)
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=RishikeshDarandale/website-deploy)](https://dependabot.com)
 
