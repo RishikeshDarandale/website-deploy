@@ -6,6 +6,9 @@ A simple utility to deploy a static website to [s3-bucket, ...]
 [![Known Vulnerabilities](https://snyk.io/test/github/RishikeshDarandale/website-deploy/badge.svg)](https://snyk.io/test/github/RishikeshDarandale/website-deploy)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b5521af6e43f477a85b40d146177dc32)](https://www.codacy.com/app/RishikeshDarandale/website-deploy?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=RishikeshDarandale/website-deploy&amp;utm_campaign=Badge_Grade)
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=RishikeshDarandale/website-deploy)](https://dependabot.com)
+[![npm](https://img.shields.io/npm/v/website-deploy.svg)](https://www.npmjs.com/package/website-deploy)
+[![npm](https://img.shields.io/npm/dt/website-deploy.svg)](https://www.npmjs.com/package/website-deploy)
+[![NpmLicense](https://img.shields.io/npm/l/website-deploy.svg)](https://github.com/RishikeshDarandale/website-deploy/blob/master/LICENSE)
 
 # Pre-requisite
 
