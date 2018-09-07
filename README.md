@@ -96,7 +96,7 @@ If you are experiencing a issue or wanted to add a new feature, please create a 
 
 # Contributing
 
-:heart: contribution: Here is [contributing guide] in deatil.
+:heart: contribution: Here is [contributing guide][2] in deatil.
 
 For impatient here are quick steps:
 
@@ -110,3 +110,4 @@ For impatient here are quick steps:
 
 
 [1]: https://github.com/RishikeshDarandale/website-deploy/issues/new
+[2]: ./CONTRIBUTING.md
