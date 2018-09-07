@@ -37,29 +37,35 @@ class S3Deploy {
       let files = await readDirectory(directoryPath, []);
       if (options.debug) {
         logger.debug(
-          'Files from the directory: ' + JSON.stringify(files, null, 2)
+            'Directory: ' +
+            directoryPath +
+            '\n' +
+            'Files from the directory: ' +
+            JSON.stringify(files, null, 2)
         );
       }
       // copy the files to s3
       await Promise.all(
-        files.map(async (name) => {
-          let params = {
-            Bucket: bucketName,
-            Key: name.substring(directoryPath.length + 1),
-          };
-          // lets check if object need to be updated
-          let needCopy = await that.exists(params, name);
-          // add a stream to params object
-          params.Body = fs.createReadStream(name);
-          if (options.debug) {
-            logger.debug('Should the file ' + name + ' synced? => ' + needCopy);
-          }
-          // copy the object if necessary
-          if (needCopy) {
-            await that.copy(params);
-          }
-          return name;
-        })
+          files.map(async (name) => {
+          // check the last char for /
+            let offset = directoryPath.slice(-1) === '/' ? 0 : 1;
+            let params = {
+              Bucket: bucketName,
+              Key: name.substring(directoryPath.length + offset),
+            };
+            // lets check if object need to be updated
+            let needCopy = await that.exists(params, name);
+            // add a stream to params object
+            params.Body = fs.createReadStream(name);
+            if (options.debug) {
+              logger.debug('Should the file ' + name + ' synced? => ' + needCopy);
+            }
+            // copy the object if necessary
+            if (needCopy) {
+              await that.copy(params);
+            }
+            return name;
+          })
       );
 
       if (options.delete) {
@@ -70,49 +76,49 @@ class S3Deploy {
         await this.ls({Bucket: bucketName}, allKeys);
         if (options.debug) {
           logger.debug(
-            'All keys in bucket: ' + JSON.stringify(allKeys, null, 2)
+              'All keys in bucket: ' + JSON.stringify(allKeys, null, 2)
           );
         }
         // Check the files exists in source
         await Promise.all(
-          allKeys.map(async (key) => {
-            let filepath = path.join(directoryPath, key);
-            if (options.debug) {
-              logger.debug(
-                'Trying to check the object' + filepath + ' in source.'
-              );
-            }
-            if (!fs.existsSync(filepath)) {
+            allKeys.map(async (key) => {
+              let filepath = path.join(directoryPath, key);
               if (options.debug) {
-                logger.debug('File ' + filepath + ' does not exits in source.');
+                logger.debug(
+                    'Trying to check the object' + filepath + ' in source.'
+                );
               }
-              // delete from the bucket
-              let params = {
-                Bucket: bucketName,
-                Key: key,
-              };
-              try {
-                let data = await this.s3.deleteObject(params).promise();
+              if (!fs.existsSync(filepath)) {
                 if (options.debug) {
-                  logger.debug(
-                    'Delete response:' + JSON.stringify(data, null, 2)
-                  );
+                  logger.debug('File ' + filepath + ' does not exits in source.');
                 }
+                // delete from the bucket
+                let params = {
+                  Bucket: bucketName,
+                  Key: key,
+                };
+                try {
+                  let data = await this.s3.deleteObject(params).promise();
+                  if (options.debug) {
+                    logger.debug(
+                        'Delete response:' + JSON.stringify(data, null, 2)
+                    );
+                  }
 
-                // DeleteMarker property will be in case of versioning of objects
-                if (
-                  Object.getOwnPropertyNames(data).length == 0 ||
+                  // DeleteMarker property will be in case of versioning of objects
+                  if (
+                    Object.getOwnPropertyNames(data).length == 0 ||
                   data.DeleteMarker
-                ) {
-                  logger.info(
-                    'Object ' + key + ' has been deleted successfully.'
-                  );
+                  ) {
+                    logger.info(
+                        'Object ' + key + ' has been deleted successfully.'
+                    );
+                  }
+                } catch (exception) {
+                  logger.error(exception);
                 }
-              } catch (exception) {
-                logger.error(exception);
               }
-            }
-          })
+            })
         );
       }
     } else {
@@ -134,16 +140,16 @@ class S3Deploy {
       let data = await this.s3.getObject(params).promise();
       if (
         crypto
-          .createHash('md5')
-          .update(fs.readFileSync(file, 'utf8'))
-          .digest('hex') ===
+            .createHash('md5')
+            .update(fs.readFileSync(file, 'utf8'))
+            .digest('hex') ===
         crypto
-          .createHash('md5')
-          .update(data.Body.toString('utf-8'))
-          .digest('hex')
+            .createHash('md5')
+            .update(data.Body.toString('utf-8'))
+            .digest('hex')
       ) {
         logger.info(
-          'File ' + params.Key + ' is unchanged, thus not copying it.'
+            'File ' + params.Key + ' is unchanged, thus not copying it.'
         );
         return Promise.resolve(false);
       }
