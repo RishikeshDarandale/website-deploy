@@ -31,7 +31,7 @@ class CacheInvalidate {
     let params = {
       DistributionId: distributionId,
       InvalidationBatch: {
-        CallerReference: Math.floor(Date.now() / 1000),
+        CallerReference: 'website-deploy-' + Math.floor(Date.now() / 1000),
         Paths: {
           Quantity: options.path.length,
           Items: options.path,
@@ -40,20 +40,20 @@ class CacheInvalidate {
     };
     if (options.debug) {
       logger.debug(
-        'Submitting the request with: ' + JSON.stringify(params, null, 2)
+          'Submitting the request with: ' + JSON.stringify(params, null, 2)
       );
     }
-    let response = await cloudfront.createInvalidation(params).promise();
+    let response = await this.cloudfront.createInvalidation(params).promise();
     if (response.Invalidation) {
       logger.info(
-        'Invalidation is submitted with id: ' + response.Invalidation.Id
+          'Invalidation is submitted with id: ' + response.Invalidation.Id
       );
       logger.info(
-        'The current status of request is: ' + response.Invalidation.Status
+          'The current status of request is: ' + response.Invalidation.Status
       );
       if (options.debug) {
         logger.debug(
-          'The response received: ' + JSON.stringify(response, null, 2)
+            'The response received: ' + JSON.stringify(response, null, 2)
         );
       }
     }
