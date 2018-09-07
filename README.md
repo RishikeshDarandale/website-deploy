@@ -89,3 +89,24 @@ Provide a AWS credential profile as a credentials.
 `--region <AWS region>`
 
 Provide a AWS region Name
+
+# Issue or need a new feature?
+
+If you are experiencing a issue or wanted to add a new feature, please create a github issue [here][1].
+
+# Contributing
+
+:heart: contribution: Here is [contributing guide] in deatil.
+
+For impatient here are quick steps:
+
+- **Fork** the repository
+- Create **Branch** in you local repository
+- while(youFinish) { **Commit** }
+- **Squash** related commits.
+- **Write** unit test cases for your work.
+- Check the **Build** on your local.
+- Raise a **Pull Request** (aka PR)
+
+
+[1]: https://github.com/RishikeshDarandale/website-deploy/issues/new
