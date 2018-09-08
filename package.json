@@ -15,11 +15,11 @@
   "author": "Rishikesh Darandale <Rishikesh.Darandale@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "aws-sdk": "^2.310.0",
+    "aws-sdk": "^2.311.0",
     "chalk": "^2.4.1",
     "clear": "^0.1.0",
     "clui": "^0.3.6",
-    "commander": "^2.17.1",
+    "commander": "^2.18.0",
     "figlet": "^1.2.0"
   },
   "devDependencies": {
