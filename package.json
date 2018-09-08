@@ -20,7 +20,8 @@
     "clear": "^0.1.0",
     "clui": "^0.3.6",
     "commander": "^2.18.0",
-    "figlet": "^1.2.0"
+    "figlet": "^1.2.0",
+    "mime": "^2.3.1"
   },
   "devDependencies": {
     "ava": "1.0.0-beta.8",

@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
 const Logger = require('./logger.js');
+const mime = require('mime');
 const logger = new Logger();
 
 /**
@@ -54,14 +55,15 @@ class S3Deploy {
               Key: name.substring(directoryPath.length + offset),
             };
             // lets check if object need to be updated
-            let needCopy = await that.exists(params, name);
+            let same = await that.exists(params, name);
             // add a stream to params object
             params.Body = fs.createReadStream(name);
             if (options.debug) {
-              logger.debug('Should the file ' + name + ' synced? => ' + needCopy);
+              logger.debug('Should the file ' + name + ' copied? => ' + !same);
             }
             // copy the object if necessary
-            if (needCopy) {
+            if (!same) {
+              params.ContentType = mime.getType(name);
               await that.copy(params);
             }
             return name;
@@ -138,24 +140,23 @@ class S3Deploy {
   async exists(params, file) {
     try {
       let data = await this.s3.headObject(params).promise();
-      // ETag is MD5 digest till the file size is 5GB, when the file uploaded
-      // as multipart, ETag will not be useful here.
-      // see: https://stackoverflow.com/questions/14591926/how-to-compare-local-file-with-amazon-s3-file
-      if (
-        crypto
-            .createHash('md5')
-            .update(fs.readFileSync(file, 'utf8'))
-            .digest('hex') === data.ETag.slice(1, -1)
-      ) {
+      const md5LocalFile = crypto
+          .createHash('md5')
+          .update(fs.readFileSync(file, 'utf8'))
+          .digest('hex');
+      if (data !== null && md5LocalFile === data.ETag.slice(1, -1)) {
+        // ETag is MD5 digest till the file size is 5GB, when the file uploaded
+        // as multipart, ETag will not be useful here.
+        // see: https://stackoverflow.com/questions/14591926/how-to-compare-local-file-with-amazon-s3-file
         logger.info(
             'File ' + params.Key + ' is unchanged, thus not copying it.'
         );
-        return Promise.resolve(false);
+        return Promise.resolve(true);
       }
     } catch (exception) {
       logger.error(exception);
     }
-    return Promise.resolve(true);
+    return Promise.resolve(false);
   }
 
   /**
