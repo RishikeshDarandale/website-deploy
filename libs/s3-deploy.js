@@ -137,16 +137,15 @@ class S3Deploy {
    */
   async exists(params, file) {
     try {
-      let data = await this.s3.getObject(params).promise();
+      let data = await this.s3.headObject(params).promise();
+      // ETag is MD5 digest till the file size is 5GB, when the file uploaded
+      // as multipart, ETag will not be useful here.
+      // see: https://stackoverflow.com/questions/14591926/how-to-compare-local-file-with-amazon-s3-file
       if (
         crypto
             .createHash('md5')
             .update(fs.readFileSync(file, 'utf8'))
-            .digest('hex') ===
-        crypto
-            .createHash('md5')
-            .update(data.Body.toString('utf-8'))
-            .digest('hex')
+            .digest('hex') === data.ETag.slice(1, -1)
       ) {
         logger.info(
             'File ' + params.Key + ' is unchanged, thus not copying it.'
