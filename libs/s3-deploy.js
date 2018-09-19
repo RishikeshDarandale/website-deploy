@@ -14,7 +14,7 @@ class S3Deploy {
   /**
    * s3 utility constructor
    *
-   * @param {S3} s3 The elasticsearch client object
+   * @param {S3} s3 The s3 client object
    */
   constructor(s3) {
     this.s3 = s3;

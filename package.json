@@ -44,6 +44,6 @@
     "prepush": "lint-staged"
   },
   "bin": {
-    "website-deploy": "./index.js"
+    "website-deploy": "./commands/index"
   }
 }

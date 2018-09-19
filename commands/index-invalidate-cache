@@ -1,0 +1,57 @@
+#!/usr/bin/env node
+
+const program = require('commander');
+const AWS = require('aws-sdk');
+const Logger = require('../libs/logger.js');
+const CacheInvalidate = require('../libs/cf-invalidate.js');
+
+const logger = new Logger();
+
+/**
+ * callback to collect the multiple instances of same argument options
+ *
+ * @param {String} val A value of argument option
+ * @param {Array} memo An array
+ * @return {Array} An array containing all values of argument option
+ */
+function collect(val, memo) {
+  memo.push(val);
+  return memo;
+}
+
+// invalidate the cloudfront Cache
+program
+  .name('invalidate-cache')
+  .usage('[options] <cloudfrontId>')
+  .arguments('<cloudfrontId>')
+  .option('--profile <profileName>', 'AWS credential profile name')
+  .option('--region <regionName>', 'AWS region name', 'us-east-1')
+  .option(
+    '--path [value]',
+    'A repeatable value of path that needs the invalidation',
+    collect,
+    []
+  )
+  .option('--debug [flag]', 'Log extra debug information')
+  .action(function(cloudfrontId, options) {
+    logger.info('Invalidating the cache for cloudfront id: ' + cloudfrontId);
+    AWS.config.update({region: options.region});
+    if (options.profile !== undefined) {
+      let credentials = new AWS.SharedIniFileCredentials({
+        profile: options.profile,
+      });
+      AWS.config.credentials = credentials;
+    }
+    let cloudfront = new AWS.CloudFront();
+    let cacheInvalidate = new CacheInvalidate(cloudfront);
+    try {
+      cacheInvalidate.invalidate(cloudfrontId, options);
+    } catch (exception) {
+      logger.error(exception);
+      process.exit(1);
+    }
+  })
+  .parse(process.argv);
+
+// dispay the usage
+if (!program.args.length && program.args.length < 2) program.help();
