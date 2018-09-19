@@ -1,0 +1,37 @@
+#!/usr/bin/env node
+
+const program = require('commander');
+const AWS = require('aws-sdk');
+const Logger = require('../libs/logger.js');
+const LambdaDeploy = require('../libs/lambda-deploy.js');
+
+const logger = new Logger();
+
+// deploy command
+program
+  .name('update')
+  .arguments('<functionName> <zipFilePath>')
+  .option('--profile <profileName>', 'AWS credential profile name')
+  .option('--region <regionName>', 'AWS region name', 'us-east-1')
+  .option('--debug [flag]', 'Log extra debug information')
+  .action(function(functionName, zipFilePath, options) {
+    AWS.config.update({region: options.region});
+    if (options.profile !== undefined) {
+      let credentials = new AWS.SharedIniFileCredentials({
+        profile: options.profile,
+      });
+      AWS.config.credentials = credentials;
+    }
+    let lambda = new AWS.Lambda();
+    let lambdaDeploy = new LambdaDeploy(lambda);
+    try {
+      lambdaDeploy.update(functionName, zipFilePath, options);
+    } catch (exception) {
+      logger.error(exception.message);
+      process.exit(1);
+    }
+  })
+  .parse(process.argv);
+
+// dispay the usage
+if (!program.args.length && program.args.length < 3) program.help();

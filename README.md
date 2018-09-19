@@ -1,6 +1,6 @@
 # website-deploy
 
-A simple utility to deploy a static website to [s3-bucket, ...]
+A simple utility to deploy a static website to [s3-bucket, lambda, ...]
 
 [![CircleCI](https://circleci.com/gh/RishikeshDarandale/website-deploy.svg?style=svg)](https://circleci.com/gh/RishikeshDarandale/website-deploy)
 [![Known Vulnerabilities](https://snyk.io/test/github/RishikeshDarandale/website-deploy/badge.svg)](https://snyk.io/test/github/RishikeshDarandale/website-deploy)
@@ -32,7 +32,7 @@ npm install --save-dev website-deploy
 
 This utility has following sub-commands:
 
-## deploy
+## s3 deploy
 
 This sub-command sync the provided source folder with AWS s3 bucket.
 
@@ -56,7 +56,54 @@ Provide a AWS credential profile as a credentials.
 
 `--region <AWS region>`
 
-Provide a AWS region Name
+Provide a AWS region Name. Default is `us-east-1`.
+
+## lambda deploy
+
+This will deploy your application deployable file to AWS lambda.
+
+### update
+
+Deploy/update a new function code.
+
+```console
+website-deploy lambda update [options] <functionName> <zipFilePath>
+```
+
+`--debug [true|false]`
+
+This will print extra debug statements for more visibility
+
+`--profile <profile name>`
+
+Provide a AWS credential profile as a credentials.
+
+`--region <AWS region>`
+
+Provide a AWS region Name. Default is `us-east-1`.
+
+### version
+
+Get the versions deployed to function.
+
+```console
+website-deploy lambda version [options] <functionName>
+```
+`--count [count]`
+
+This will display the maximum version specified by count. Default is `10`.
+
+`--debug [true|false]`
+
+This will print extra debug statements for more visibility
+
+`--profile <profile name>`
+
+Provide a AWS credential profile as a credentials.
+
+`--region <AWS region>`
+
+Provide a AWS region Name. Default is `us-east-1`.
 
 ## invalidate-cache
 
@@ -88,7 +135,7 @@ Provide a AWS credential profile as a credentials.
 
 `--region <AWS region>`
 
-Provide a AWS region Name
+Provide a AWS region Name. Default is `us-east-1`.
 
 # Issue or need a new feature?
 
