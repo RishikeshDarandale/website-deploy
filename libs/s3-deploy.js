@@ -5,7 +5,10 @@ const fs = require('fs');
 const crypto = require('crypto');
 const Logger = require('./logger.js');
 const mime = require('mime');
+const os = require('os');
+
 const logger = new Logger();
+const platform = os.platform();
 
 /**
  * A s3 utility class
@@ -29,6 +32,10 @@ class S3Deploy {
    */
   async syncBucket(directory, bucketName, options) {
     let that = this;
+    if (platform === 'win32') {
+      // if win32, then replace any / with \
+      directory = directory.replace(/\//g, '\\');
+    }
     let directoryPath = path.normalize(directory);
     if (!path.isAbsolute(directoryPath)) {
       directoryPath = path.join(process.cwd(), directoryPath);
@@ -48,11 +55,18 @@ class S3Deploy {
       // copy the files to s3
       await Promise.all(
           files.map(async (name) => {
-          // check the last char for /
-            let offset = directoryPath.slice(-1) === '/' ? 0 : 1;
+          // check the last char for / (linux, darwin) or \ (win32)
+            const offset =
+            directoryPath.slice(-1) === '/' || directoryPath.slice(-1) === '\\'
+              ? 0
+              : 1;
+            const objectKey = name.substring(directoryPath.length + offset);
+            if (platform === 'win32') {
+              objectKey = objectKey.replace(/\\/g, '/');
+            }
             let params = {
               Bucket: bucketName,
-              Key: name.substring(directoryPath.length + offset),
+              Key: objectKey,
             };
             // lets check if object need to be updated
             let same = await that.exists(params, name);
