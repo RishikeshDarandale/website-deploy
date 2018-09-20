@@ -60,7 +60,7 @@ class S3Deploy {
             directoryPath.slice(-1) === '/' || directoryPath.slice(-1) === '\\'
               ? 0
               : 1;
-            const objectKey = name.substring(directoryPath.length + offset);
+            let objectKey = name.substring(directoryPath.length + offset);
             if (platform === 'win32') {
               objectKey = objectKey.replace(/\\/g, '/');
             }
