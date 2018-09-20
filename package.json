@@ -1,11 +1,12 @@
 {
   "name": "website-deploy",
   "version": "1.0.6",
-  "description": "A simple utility to deploy a static website to [s3-bucket, ...]",
+  "description": "A simple utility to deploy a static website to [s3-bucket, lambda, ...]",
   "main": "index.js",
   "keywords": [
     "aws",
     "s3",
+    "lambda",
     "static",
     "website",
     "deploy",
@@ -13,9 +14,18 @@
     "cli"
   ],
   "author": "Rishikesh Darandale <Rishikesh.Darandale@gmail.com>",
+  "homepage": "https://rishikeshdarandale.github.io/website-deploy/",
+  "bugs": {
+    "url": "https://github.com/RishikeshDarandale/website-deploy/issues",
+    "email": "Rishikesh.Darandale@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RishikeshDarandale/website-deploy"
+  },
   "license": "MIT",
   "dependencies": {
-    "aws-sdk": "^2.311.0",
+    "aws-sdk": "^2.318.0",
     "chalk": "^2.4.1",
     "clear": "^0.1.0",
     "clui": "^0.3.6",
@@ -25,13 +35,13 @@
   },
   "devDependencies": {
     "ava": "1.0.0-beta.8",
-    "eslint": "^5.4.0",
+    "eslint": "^5.6.0",
     "eslint-config-google": "^0.10.0",
     "husky": "^0.14.3",
     "lint-staged": "^7.2.2",
-    "mock-fs": "^4.6.0",
-    "prettier": "^1.14.2",
-    "sinon": "^6.1.5"
+    "mock-fs": "^4.7.0",
+    "prettier": "^1.14.3",
+    "sinon": "^6.3.4"
   },
   "engines": {
     "node": ">=8.11.2",
