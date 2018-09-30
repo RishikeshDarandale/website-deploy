@@ -25,7 +25,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "aws-sdk": "^2.318.0",
+    "aws-sdk": "^2.325.0",
     "chalk": "^2.4.1",
     "clear": "^0.1.0",
     "clui": "^0.3.6",
@@ -35,10 +35,10 @@
   },
   "devDependencies": {
     "ava": "1.0.0-beta.8",
-    "eslint": "^5.6.0",
+    "eslint": "^5.6.1",
     "eslint-config-google": "^0.10.0",
     "husky": "^1.0.0",
-    "lint-staged": "^7.2.2",
+    "lint-staged": "^7.3.0",
     "mock-fs": "^4.7.0",
     "prettier": "^1.14.3",
     "sinon": "^6.3.4"
@@ -54,6 +54,6 @@
     "prepush": "lint-staged"
   },
   "bin": {
-    "website-deploy": "./commands/index"
+    "website-deploy": "./commands/website-deploy"
   }
 }
