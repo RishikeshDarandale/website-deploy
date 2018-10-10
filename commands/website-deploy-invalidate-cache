@@ -32,7 +32,7 @@ program
     collect,
     []
   )
-  .option('--debug [flag]', 'Log extra debug information')
+  .option('--debug', 'Log extra debug information')
   .action(function(cloudfrontId, options) {
     logger.info('Invalidating the cache for cloudfront id: ' + cloudfrontId);
     AWS.config.update({region: options.region});

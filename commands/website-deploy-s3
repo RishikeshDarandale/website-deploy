@@ -15,10 +15,10 @@ program
   .option('--profile <profileName>', 'AWS credential profile name')
   .option('--region <regionName>', 'AWS region name', 'us-east-1')
   .option(
-    '--delete [flag]',
+    '--delete',
     'Files that exist in the destination but not in the source are deleted during sync'
   )
-  .option('--debug [flag]', 'Log extra debug information')
+  .option('--debug', 'Log extra debug information')
   .action(function(srcDirectory, bucketName, options) {
     const message =
       'Deploying from ' + srcDirectory + ' to s3 bucket ' + bucketName;

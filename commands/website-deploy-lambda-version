@@ -13,7 +13,7 @@ program
   .arguments('<functionName>')
   .option('--profile <profileName>', 'AWS credential profile name')
   .option('--region <regionName>', 'AWS region name', 'us-east-1')
-  .option('--debug [flag]', 'Log extra debug information')
+  .option('--debug', 'Log extra debug information')
   .option('--count [count]', 'Latest count number of versions to be displayed', 10)
   .action(function(functionName, options) {
     AWS.config.update({region: options.region});

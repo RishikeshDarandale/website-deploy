@@ -13,7 +13,7 @@ program
   .arguments('<functionName> <zipFilePath>')
   .option('--profile <profileName>', 'AWS credential profile name')
   .option('--region <regionName>', 'AWS region name', 'us-east-1')
-  .option('--debug [flag]', 'Log extra debug information')
+  .option('--debug', 'Log extra debug information')
   .action(function(functionName, zipFilePath, options) {
     AWS.config.update({region: options.region});
     if (options.profile !== undefined) {

@@ -42,11 +42,11 @@ website-deploy s3 [options] <SOURCE_DIR> <S3_BUCKET_NAME>
 
 ### Options
 
-`--delete [true|false]`
+`--delete`
 
 This will delete all the files from the AWS s3 bucket which are not present in provided <SOURCE_DIR>
 
-`--debug [true|false]`
+`--debug`
 
 This will print extra debug statements for more visibility
 
@@ -70,7 +70,7 @@ Deploy/update a new function code.
 website-deploy lambda update [options] <functionName> <zipFilePath>
 ```
 
-`--debug [true|false]`
+`--debug`
 
 This will print extra debug statements for more visibility
 
@@ -93,7 +93,7 @@ website-deploy lambda version [options] <functionName>
 
 This will display the maximum version specified by count. Default is `10`.
 
-`--debug [true|false]`
+`--debug`
 
 This will print extra debug statements for more visibility
 
@@ -104,6 +104,32 @@ Provide a AWS credential profile as a credentials.
 `--region <AWS region>`
 
 Provide a AWS region Name. Default is `us-east-1`.
+
+### build
+
+Create the lambda deploable zip file
+
+```console
+website-deploy lambda build [options] <outputZipFileName>
+```
+
+`--path <PATH>`
+
+A object path to be invalidated. This can be provided multiple times to specify additional paths.
+
+e.g.
+
+```console
+website-deploy lambda build --path "/index.js" --path "/lambda.js" myapp.zip
+```
+
+`--include-node-modules`
+
+Include the `production` npm packages. This will need `package-lock.json`
+
+`--debug`
+
+This will print extra debug statements for more visibility
 
 ## invalidate-cache
 

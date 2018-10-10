@@ -1,0 +1,73 @@
+#!/usr/bin/env node
+
+const fs = require('fs');
+const program = require('commander');
+const Logger = require('../libs/logger.js');
+const zip = require('bestzip');
+
+const logger = new Logger();
+
+/**
+ * callback to collect the multiple instances of same argument options
+ *
+ * @param {String} val A value of argument option
+ * @param {Array} memo An array
+ * @return {Array} An array containing all values of argument option
+ */
+function collect(val, memo) {
+  memo.push(val);
+  return memo;
+}
+
+// invalidate the cloudfront Cache
+program
+  .name('build')
+  .usage('[options] <outputZipFileName>')
+  .arguments('<outputZipFileName>')
+  .option(
+    '--path [value]',
+    'A repeatable value of path that needs to be added to build',
+    collect,
+    []
+  )
+  .option('--include-node-modules', 'Include the production dependencies from node_modules/')
+  .option('--debug', 'Log extra debug information')
+  .action(function(outputZipFileName, options) {
+    logger.info('Creating a zip file with name: ' + outputZipFileName);
+    let pathToInclude = [];
+    pathToInclude = pathToInclude.concat(options.path);
+    // check if node_modules present in current directory
+    if (options.includeNodeModules && fs.existsSync('node_modules')) {
+      // get only production packages from package-lock.json
+      if (fs.existsSync('package-lock.json')) {
+        try {
+          const packageLockJson = JSON.parse(fs.readFileSync('./package-lock.json'));
+          for (var key in packageLockJson.dependencies) {
+            if (packageLockJson.dependencies.hasOwnProperty(key) && !packageLockJson.dependencies[key].dev) {
+              if (options.debug) {
+                logger.debug('Adding node_module/' + key);
+              }
+              pathToInclude.push('node_modules/'+ key);
+            }
+          }
+        } catch(exception) {
+          logger.error('Couldn\'t read the package-lock.json file');
+        }
+      } else {
+        logger.error('package-lock.json is not present.')
+      }
+    }
+    zip({
+      source: pathToInclude,
+      destination: outputZipFileName
+    }).then(function() {
+      logger.info('File created!');
+    }).catch(function(err) {
+      logger.error('Exception while creating the file: ' + outputZipFileName);
+      process.exit(1);
+    });
+  })
+  .parse(process.argv);
+
+// dispay the usage
+if (!program.args.length && program.args.length < 2) program.help();
