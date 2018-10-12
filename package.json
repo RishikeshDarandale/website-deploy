@@ -1,6 +1,6 @@
 {
   "name": "website-deploy",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "A simple utility to deploy a static website to [s3-bucket, lambda, ...]",
   "main": "index.js",
   "keywords": [
