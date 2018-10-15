@@ -42,7 +42,7 @@
     "lint-staged": "^7.3.0",
     "mock-fs": "^4.7.0",
     "prettier": "^1.14.3",
-    "sinon": "^6.3.5"
+    "sinon": "^7.0.0"
   },
   "engines": {
     "node": ">=8.11.2",
