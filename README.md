@@ -169,6 +169,8 @@ If you are experiencing a issue or wanted to add a new feature, please create a 
 
 # Contributing
 
+:star: Star me on GitHub — it helps!
+
 :heart: contribution: Here is [contributing guide][2] in deatil.
 
 For impatient here are quick steps:
