@@ -25,23 +25,23 @@
   },
   "license": "MIT",
   "dependencies": {
-    "aws-sdk": "^2.333.0",
-    "bestzip": "^2.1.1",
+    "aws-sdk": "^2.368.0",
+    "bestzip": "^2.1.2",
     "chalk": "^2.4.1",
     "clear": "^0.1.0",
     "clui": "^0.3.6",
     "commander": "^2.19.0",
     "figlet": "^1.2.1",
-    "mime": "^2.3.1"
+    "mime": "^2.4.0"
   },
   "devDependencies": {
     "ava": "1.0.0-rc.2",
-    "eslint": "^5.6.1",
+    "eslint": "^5.9.0",
     "eslint-config-google": "^0.11.0",
-    "husky": "^1.1.2",
+    "husky": "^1.2.0",
     "lint-staged": "^8.0.3",
     "mock-fs": "^4.7.0",
-    "prettier": "^1.14.3",
+    "prettier": "^1.15.3",
     "sinon": "^7.0.0"
   },
   "engines": {
