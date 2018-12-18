@@ -35,7 +35,7 @@
     "mime": "^2.4.0"
   },
   "devDependencies": {
-    "ava": "1.0.0-rc.2",
+    "ava": "1.0.1",
     "eslint": "^5.9.0",
     "eslint-config-google": "^0.11.0",
     "husky": "^1.2.0",
