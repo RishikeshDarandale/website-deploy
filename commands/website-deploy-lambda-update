@@ -13,6 +13,8 @@ program
   .arguments('<functionName> <zipFilePath>')
   .option('--profile <profileName>', 'AWS credential profile name')
   .option('--region <regionName>', 'AWS region name', 'us-east-1')
+  .option('--bucket <bucketName>', 'S3 bucket name')
+  .option('--prefix <filePrefix>', 'S3 file prefix')
   .option('--debug', 'Log extra debug information')
   .action(function(functionName, zipFilePath, options) {
     AWS.config.update({region: options.region});
@@ -23,7 +25,8 @@ program
       AWS.config.credentials = credentials;
     }
     let lambda = new AWS.Lambda();
-    let lambdaDeploy = new LambdaDeploy(lambda);
+    let s3 = new AWS.S3();
+    let lambdaDeploy = new LambdaDeploy(lambda, s3);
     try {
       lambdaDeploy.update(functionName, zipFilePath, options);
     } catch (exception) {
