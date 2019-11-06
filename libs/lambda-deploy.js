@@ -1,9 +1,13 @@
 'use strict';
 
+const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
 const Logger = require('./logger.js');
+const os = require('os');
+
 const logger = new Logger();
+const platform = os.platform();
 
 /**
  * A lambda deployment utility class
@@ -13,9 +17,11 @@ class LambdaDeploy {
    * lambda utility constructor
    *
    * @param {Lambda} lambda The lambda client object
+   * @param {S3} s3 The s3 client object
    */
-  constructor(lambda) {
+  constructor(lambda, s3) {
     this.lambda = lambda;
+    this.s3 = s3;
   }
 
   /**
@@ -28,7 +34,7 @@ class LambdaDeploy {
   async update(functionName, zipFilePath, options) {
     if (fs.existsSync(zipFilePath)) {
       // get the current function code sha256
-      let currentFunctionCodeSha256 = await this.getLatestCodeSha256(
+      const currentFunctionCodeSha256 = await this.getLatestCodeSha256(
           functionName
       );
       if (options.debug) {
@@ -49,9 +55,32 @@ class LambdaDeploy {
         const zipData = fs.readFileSync(zipFilePath);
         const params = {
           FunctionName: functionName,
-          ZipFile: zipData,
           Publish: true,
         };
+        if (options.bucket) {
+          if (options.debug) {
+            logger.debug('Uploading the file to s3 bucket: ' + options.bucket);
+          }
+          // upload the it via s3 bucket
+          try {
+            const copyResponse = await copy(
+                s3,
+                options.bucket,
+                options.prefix,
+                zipFilePath
+            );
+            params.S3Bucket = copyResponse.Bucket;
+            params.S3Key = copyResponse.Key;
+          } catch (exception) {
+            logger.error('Exception: ' + exception);
+            throw new Error(
+                'Could not copy the file s3 bucket: ' + options.bucket
+            );
+          }
+          throw new Error('test');
+        } else {
+          params.ZipFile = zipData;
+        }
         try {
           const response = await this.lambda
               .updateFunctionCode(params)
@@ -91,7 +120,7 @@ class LambdaDeploy {
    * @return {String} A promise with resolve to properties of function
    */
   async getLatestCodeSha256(functionName) {
-    let params = {
+    const params = {
       FunctionName: functionName,
     };
     try {
@@ -102,7 +131,7 @@ class LambdaDeploy {
     } catch (exception) {
       logger.error(exception);
     }
-    return Promise.reject(null);
+    return Promise.reject(new Error('Could not generate the SHA code'));
   }
 
   /**
@@ -144,7 +173,7 @@ class LambdaDeploy {
    * @return {Array} An array of versions
    */
   async versions(functionName, options) {
-    let keepLast = options.count || 5;
+    const keepLast = options.count || 5;
     const versions = await this.listVersions(functionName);
 
     const sorted = versions.sort((v1, v2) => {
@@ -164,14 +193,52 @@ class LambdaDeploy {
 }
 
 /**
+ * copy the file to s3 bucket
+ *
+ * @param {S3} s3 s3 client object
+ * @param {String} bucket bucket name
+ * @param {String} prefix the prefix to be used for uploaded file
+ * @param {String} filePath file to upload
+ * @return {Object} s3 copy reuest object
+ */
+async function copy(s3, bucket, prefix, filePath) {
+  if (platform === 'win32') {
+    // if win32, then replace any / with \
+    filePath = filePath.replace(/\//g, '\\');
+  }
+  filePath = path.normalize(filePath);
+  if (!path.isAbsolute(filePath)) {
+    filePath = path.join(process.cwd(), filePath);
+  }
+  logger.debug('The file path is: ' + filePath);
+  const objectKey = filePath.substring(filePath.lastIndexOf('/'));
+
+  const params = {
+    Bucket: bucket,
+    Key: prefix ? prefix + '/' + objectKey : objectKey,
+  };
+  params.Body = fs.createReadStream(name);
+  try {
+    const data = await s3.putObject(params).promise();
+    if (data.ETag) {
+      logger.info('File ' + params.Key + ' has been copied successfully.');
+    }
+  } catch (exception) {
+    logger.error(exception);
+    throw new Error('Could not copy the file to s3 bucket.');
+  }
+  return params;
+}
+
+/**
  * Get the sha256 of a deployable file in base64
  *
  * @param {String} fileName The a deployable file
  * @return {Promise} A promise with resolve to sha256 in base64 for the provided file
  */
 function getSHA256(fileName) {
-  let readStream = fs.createReadStream(fileName);
-  let hash = crypto.createHash('sha256');
+  const readStream = fs.createReadStream(fileName);
+  const hash = crypto.createHash('sha256');
   hash.setEncoding('hex');
   readStream.on('data', function(chunk) {
     hash.update(chunk);
