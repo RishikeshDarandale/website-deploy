@@ -35,6 +35,8 @@
     "mime": "^2.4.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^8.0.0",
+    "@commitlint/config-conventional": "^8.0.0",
     "ava": "2.4.0",
     "eslint": "^6.6.0",
     "eslint-config-google": "^0.14.0",
@@ -50,9 +52,7 @@
   },
   "scripts": {
     "test": "ava --verbose",
-    "lint": "eslint --fix",
-    "precommit": "lint-staged",
-    "prepush": "lint-staged"
+    "lint": "eslint --fix"
   },
   "bin": {
     "website-deploy": "./commands/website-deploy"
