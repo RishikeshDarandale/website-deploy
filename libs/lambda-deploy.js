@@ -210,11 +210,12 @@ async function copy(s3, bucket, prefix, filePath) {
     filePath = path.join(process.cwd(), filePath);
   }
   logger.debug('The file path is: ' + filePath);
-  const objectKey = filePath.substring(filePath.lastIndexOf('/'));
+  const separator = platform === 'win32' ? '\\' : '/';
+  const objectKey = filePath.substring(filePath.lastIndexOf(separator) + 1);
 
   const params = {
     Bucket: bucket,
-    Key: prefix ? prefix + objectKey : objectKey,
+    Key: prefix ? prefix + '/' + objectKey : objectKey,
   };
   params.Body = fs.createReadStream(filePath);
   try {
