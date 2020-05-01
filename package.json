@@ -32,7 +32,8 @@
     "clui": "^0.3.6",
     "commander": "^5.0.0",
     "figlet": "^1.2.1",
-    "mime": "^2.4.0"
+    "mime": "^2.4.0",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.0.0",
@@ -52,9 +53,12 @@
   },
   "scripts": {
     "test": "ava --verbose",
-    "lint": "eslint --fix"
+    "lint": "eslint --fix",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "bin": {
     "website-deploy": "./commands/website-deploy"
-  }
+  },
+  "snyk": true
 }
