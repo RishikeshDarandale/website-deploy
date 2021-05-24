@@ -42,7 +42,7 @@
     "eslint-config-google": "^0.14.0",
     "husky": "^4.2.1",
     "lint-staged": "^10.0.7",
-    "mock-fs": "^4.7.0",
+    "mock-fs": "^5.0.0",
     "prettier": "^1.15.3",
     "sinon": "^9.0.0"
   },
