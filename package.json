@@ -25,7 +25,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "aws-sdk": "^2.368.0",
+    "aws-sdk": "^2.1354.0",
     "bestzip": "^2.1.2",
     "chalk": "^4.0.0",
     "clear": "^0.1.0",
