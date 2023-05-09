@@ -25,14 +25,15 @@
   },
   "license": "MIT",
   "dependencies": {
-    "aws-sdk": "^2.368.0",
-    "bestzip": "^2.1.2",
+    "aws-sdk": "^2.814.0",
+    "bestzip": "^2.1.7",
     "chalk": "^4.0.0",
     "clear": "^0.1.0",
     "clui": "^0.3.6",
     "commander": "^5.0.0",
     "figlet": "^1.2.1",
-    "mime": "^2.4.0"
+    "mime": "^2.4.0",
+    "@snyk/protect": "latest"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.0.0",
@@ -52,9 +53,12 @@
   },
   "scripts": {
     "test": "ava --verbose",
-    "lint": "eslint --fix"
+    "lint": "eslint --fix",
+    "prepare": "npm run snyk-protect",
+    "snyk-protect": "snyk-protect"
   },
   "bin": {
     "website-deploy": "./commands/website-deploy"
-  }
+  },
+  "snyk": true
 }
