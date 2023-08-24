@@ -42,8 +42,9 @@ program
       if (fs.existsSync('package-lock.json')) {
         try {
           const packageLockJson = JSON.parse(fs.readFileSync('./package-lock.json'));
-          for (var key in packageLockJson.dependencies) {
-            if (packageLockJson.dependencies.hasOwnProperty(key) && !packageLockJson.dependencies[key].dev) {
+          for (var key in packageLockJson.packages[""].dependencies) {
+            if (packageLockJson.packages[""].dependencies.hasOwnProperty(key)
+               && !packageLockJson.packages[""].dependencies[key].dev) {
               if (options.debug) {
                 logger.debug('Adding node_module/' + key);
               }
