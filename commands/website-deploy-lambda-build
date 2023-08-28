@@ -34,21 +34,27 @@ program
   .option('--debug', 'Log extra debug information')
   .action(function(outputZipFileName, options) {
     logger.info('Creating a zip file with name: ' + outputZipFileName);
-    let pathToInclude = [];
-    pathToInclude = pathToInclude.concat(options.path);
+    const pathToInclude = new Set([...options.path]);
     // check if node_modules present in current directory
     if (options.includeNodeModules && fs.existsSync('node_modules')) {
       // get only production packages from package-lock.json
       if (fs.existsSync('package-lock.json')) {
         try {
           const packageLockJson = JSON.parse(fs.readFileSync('./package-lock.json'));
-          for (var key in packageLockJson.packages[""].dependencies) {
-            if (packageLockJson.packages[""].dependencies.hasOwnProperty(key)
-               && !packageLockJson.packages[""].dependencies[key].dev) {
-              if (options.debug) {
-                logger.debug('Adding node_module/' + key);
+          for (var key in packageLockJson.packages) {
+            if (key && !packageLockJson.packages[key].dev) {
+              const keySplit = key.split("/node_modules/");
+              if (keySplit.length > 1) {
+                if (options.debug) {
+                  logger.debug('Adding ' + 'node_modules/'+ keySplit[1]);
+                }
+                pathToInclude.add('node_modules/'+ keySplit[1]);
+              } else {
+                if (options.debug) {
+                  logger.debug('Adding ' + key);
+                }
+                pathToInclude.add(key);
               }
-              pathToInclude.push('node_modules/'+ key);
             }
           }
         } catch(exception) {
@@ -59,7 +65,7 @@ program
       }
     }
     zip({
-      source: pathToInclude,
+      source: Array.from(pathToInclude),
       destination: outputZipFileName
     }).then(function() {
       logger.info('File created!');
