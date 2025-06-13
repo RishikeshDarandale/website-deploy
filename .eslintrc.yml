@@ -1,8 +1,0 @@
-parserOptions:
-  ecmaVersion: 2017
-  sourceType: module
-extends: google
-rules:
-  max-len:
-    - 2
-    - code: 120

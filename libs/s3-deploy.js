@@ -1,11 +1,11 @@
-'use strict';
+"use strict";
 
-const path = require('path');
-const fs = require('fs');
-const crypto = require('crypto');
-const Logger = require('./logger.js');
-const mime = require('mime');
-const os = require('os');
+const path = require("path");
+const fs = require("fs");
+const crypto = require("crypto");
+const Logger = require("./logger.js");
+const mime = require("mime");
+const os = require("os");
 
 const logger = new Logger();
 const platform = os.platform();
@@ -32,9 +32,9 @@ class S3Deploy {
    */
   async syncBucket(directory, bucketName, options) {
     let that = this;
-    if (platform === 'win32') {
+    if (platform === "win32") {
       // if win32, then replace any / with \
-      directory = directory.replace(/\//g, '\\');
+      directory = directory.replace(/\//g, "\\");
     }
     let directoryPath = path.normalize(directory);
     if (!path.isAbsolute(directoryPath)) {
@@ -45,100 +45,100 @@ class S3Deploy {
       let files = await readDirectory(directoryPath, []);
       if (options.debug) {
         logger.debug(
-            'Directory: ' +
+          "Directory: " +
             directoryPath +
-            '\n' +
-            'Files from the directory: ' +
-            JSON.stringify(files, null, 2)
+            "\n" +
+            "Files from the directory: " +
+            JSON.stringify(files, null, 2),
         );
       }
       // copy the files to s3
       await Promise.all(
-          files.map(async (name) => {
+        files.map(async (name) => {
           // check the last char for / (linux, darwin) or \ (win32)
-            const offset =
-            directoryPath.slice(-1) === '/' || directoryPath.slice(-1) === '\\'
+          const offset =
+            directoryPath.slice(-1) === "/" || directoryPath.slice(-1) === "\\"
               ? 0
               : 1;
-            let objectKey = name.substring(directoryPath.length + offset);
-            if (platform === 'win32') {
-              objectKey = objectKey.replace(/\\/g, '/');
-            }
-            let params = {
-              Bucket: bucketName,
-              Key: objectKey,
-            };
-            // lets check if object need to be updated
-            let same = await that.exists(params, name);
-            // add a stream to params object
-            params.Body = fs.createReadStream(name);
-            if (options.debug) {
-              logger.debug('Should the file ' + name + ' copied? => ' + !same);
-            }
-            // copy the object if necessary
-            if (!same) {
-              params.ContentType = mime.getType(name);
-              await that.copy(params);
-            }
-            return name;
-          })
+          let objectKey = name.substring(directoryPath.length + offset);
+          if (platform === "win32") {
+            objectKey = objectKey.replace(/\\/g, "/");
+          }
+          let params = {
+            Bucket: bucketName,
+            Key: objectKey,
+          };
+          // lets check if object need to be updated
+          let same = await that.exists(params, name);
+          // add a stream to params object
+          params.Body = fs.createReadStream(name);
+          if (options.debug) {
+            logger.debug("Should the file " + name + " copied? => " + !same);
+          }
+          // copy the object if necessary
+          if (!same) {
+            params.ContentType = mime.getType(name);
+            await that.copy(params);
+          }
+          return name;
+        }),
       );
 
       if (options.delete) {
         if (options.debug) {
-          logger.debug('Delete option specified.');
+          logger.debug("Delete option specified.");
         }
         const allKeys = [];
-        await this.ls({Bucket: bucketName}, allKeys);
+        await this.ls({ Bucket: bucketName }, allKeys);
         if (options.debug) {
           logger.debug(
-              'All keys in bucket: ' + JSON.stringify(allKeys, null, 2)
+            "All keys in bucket: " + JSON.stringify(allKeys, null, 2),
           );
         }
         // Check the files exists in source
         await Promise.all(
-            allKeys.map(async (key) => {
-              let filepath = path.join(directoryPath, key);
+          allKeys.map(async (key) => {
+            let filepath = path.join(directoryPath, key);
+            if (options.debug) {
+              logger.debug(
+                "Trying to check the object" + filepath + " in source.",
+              );
+            }
+            if (!fs.existsSync(filepath)) {
               if (options.debug) {
-                logger.debug(
-                    'Trying to check the object' + filepath + ' in source.'
-                );
+                logger.debug("File " + filepath + " does not exits in source.");
               }
-              if (!fs.existsSync(filepath)) {
+              // delete from the bucket
+              let params = {
+                Bucket: bucketName,
+                Key: key,
+              };
+              try {
+                let data = await this.s3.deleteObject(params).promise();
                 if (options.debug) {
-                  logger.debug('File ' + filepath + ' does not exits in source.');
+                  logger.debug(
+                    "Delete response:" + JSON.stringify(data, null, 2),
+                  );
                 }
-                // delete from the bucket
-                let params = {
-                  Bucket: bucketName,
-                  Key: key,
-                };
-                try {
-                  let data = await this.s3.deleteObject(params).promise();
-                  if (options.debug) {
-                    logger.debug(
-                        'Delete response:' + JSON.stringify(data, null, 2)
-                    );
-                  }
 
-                  // DeleteMarker property will be in case of versioning of objects
-                  if (
-                    Object.getOwnPropertyNames(data).length == 0 ||
+                // DeleteMarker property will be in case of versioning of objects
+                if (
+                  Object.getOwnPropertyNames(data).length == 0 ||
                   data.DeleteMarker
-                  ) {
-                    logger.info(
-                        'Object ' + key + ' has been deleted successfully.'
-                    );
-                  }
-                } catch (exception) {
-                  logger.error(exception);
+                ) {
+                  logger.info(
+                    "Object " + key + " has been deleted successfully.",
+                  );
                 }
+              } catch (exception) {
+                logger.error(exception);
               }
-            })
+            }
+          }),
         );
       }
     } else {
-      throw new Error('The source directory ' + directoryPath + ' not found.');
+      throw new Error("The source directory " + directoryPath + " not found.");
     }
   }
 
@@ -155,15 +155,15 @@ class S3Deploy {
     try {
       let data = await this.s3.headObject(params).promise();
       const md5LocalFile = crypto
-          .createHash('md5')
-          .update(fs.readFileSync(file, 'utf8'))
-          .digest('hex');
+        .createHash("md5")
+        .update(fs.readFileSync(file, "utf8"))
+        .digest("hex");
       if (data !== null && md5LocalFile === data.ETag.slice(1, -1)) {
         // ETag is MD5 digest till the file size is 5GB, when the file uploaded
         // as multipart, ETag will not be useful here.
         // see: https://stackoverflow.com/questions/14591926/how-to-compare-local-file-with-amazon-s3-file
         logger.info(
-            'File ' + params.Key + ' is unchanged, thus not copying it.'
+          "File " + params.Key + " is unchanged, thus not copying it.",
         );
         return Promise.resolve(true);
       }
@@ -182,7 +182,7 @@ class S3Deploy {
     try {
       let data = await this.s3.putObject(params).promise();
       if (data.ETag) {
-        logger.info('File ' + params.Key + ' has been copied successfully.');
+        logger.info("File " + params.Key + " has been copied successfully.");
       }
     } catch (exception) {
       logger.error(exception);
@@ -219,7 +219,7 @@ class S3Deploy {
  * @return {Array} files An array of files from the directory specified
  */
 function readDirectory(directoryPath, files) {
-  fs.readdirSync(directoryPath).forEach(function(name) {
+  fs.readdirSync(directoryPath).forEach(function (name) {
     let filePath = path.join(directoryPath, name);
     let stat = fs.statSync(filePath);
     if (stat.isFile()) {

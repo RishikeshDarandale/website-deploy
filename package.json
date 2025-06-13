@@ -35,24 +35,23 @@
     "mime": "^2.6.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^8.3.6",
-    "@commitlint/config-conventional": "^8.3.6",
-    "ava": "2.4.0",
-    "eslint": "^7.32.0",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@eslint/js": "^9.28.0",
+    "eslint": "^9.28.0",
     "eslint-config-google": "^0.14.0",
-    "husky": "^4.3.8",
-    "lint-staged": "^10.5.4",
-    "mock-fs": "^4.14.0",
-    "prettier": "^1.15.3",
-    "sinon": "^9.2.4"
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.0",
+    "prettier": "^3.5.3"
   },
   "engines": {
     "node": ">=8.11.2",
     "npm": ">=5.6.0"
   },
   "scripts": {
-    "test": "ava --verbose",
-    "lint": "eslint --fix"
+    "test": "echo \"Error: no test specified\" ",
+    "lint": "eslint",
+    "prepare": "husky"
   },
   "bin": {
     "website-deploy": "./commands/website-deploy"

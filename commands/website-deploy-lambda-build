@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
-const program = require('commander');
-const Logger = require('../libs/logger.js');
-const zip = require('bestzip');
+const fs = require("fs");
+const program = require("commander");
+const Logger = require("../libs/logger.js");
+const zip = require("bestzip");
 
 const logger = new Logger();
 
@@ -21,60 +21,67 @@ function collect(val, memo) {
 
 // invalidate the cloudfront Cache
 program
-  .name('build')
-  .usage('[options] <outputZipFileName>')
-  .arguments('<outputZipFileName>')
+  .name("build")
+  .usage("[options] <outputZipFileName>")
+  .arguments("<outputZipFileName>")
   .option(
-    '--path [value]',
-    'A repeatable value of path that needs to be added to build',
+    "--path [value]",
+    "A repeatable value of path that needs to be added to build",
     collect,
-    []
+    [],
   )
-  .option('--include-node-modules', 'Include the production dependencies from node_modules/')
-  .option('--debug', 'Log extra debug information')
-  .action(function(outputZipFileName, options) {
-    logger.info('Creating a zip file with name: ' + outputZipFileName);
+  .option(
+    "--include-node-modules",
+    "Include the production dependencies from node_modules/",
+  )
+  .option("--debug", "Log extra debug information")
+  .action(function (outputZipFileName, options) {
+    logger.info("Creating a zip file with name: " + outputZipFileName);
     const pathToInclude = new Set([...options.path]);
     // check if node_modules present in current directory
-    if (options.includeNodeModules && fs.existsSync('node_modules')) {
+    if (options.includeNodeModules && fs.existsSync("node_modules")) {
       // get only production packages from package-lock.json
-      if (fs.existsSync('package-lock.json')) {
+      if (fs.existsSync("package-lock.json")) {
         try {
-          const packageLockJson = JSON.parse(fs.readFileSync('./package-lock.json'));
+          const packageLockJson = JSON.parse(
+            fs.readFileSync("./package-lock.json"),
+          );
           for (var key in packageLockJson.packages) {
             if (key && !packageLockJson.packages[key].dev) {
               const keySplit = key.split("/node_modules/");
               if (keySplit.length > 1) {
                 if (options.debug) {
-                  logger.debug('Adding ' + 'node_modules/'+ keySplit[1]);
+                  logger.debug("Adding " + "node_modules/" + keySplit[1]);
                 }
-                pathToInclude.add('node_modules/'+ keySplit[1]);
+                pathToInclude.add("node_modules/" + keySplit[1]);
               } else {
                 if (options.debug) {
-                  logger.debug('Adding ' + key);
+                  logger.debug("Adding " + key);
                 }
                 pathToInclude.add(key);
               }
             }
           }
-        } catch(exception) {
-          logger.error('Couldn\'t read the package-lock.json file');
+        } catch (exception) {
+          logger.error("Couldn't read the package-lock.json file");
         }
       } else {
-        logger.error('package-lock.json is not present.')
+        logger.error("package-lock.json is not present.");
       }
     }
     zip({
       source: Array.from(pathToInclude),
-      destination: outputZipFileName
-    }).then(function() {
-      logger.info('File created!');
-    }).catch(function(err) {
-      logger.error('Exception while creating the file: ' + outputZipFileName);
-      process.exit(1);
-    });
+      destination: outputZipFileName,
+    })
+      .then(function () {
+        logger.info("File created!");
+      })
+      .catch(function (err) {
+        logger.error("Exception while creating the file: " + outputZipFileName);
+        process.exit(1);
+      });
   })
   .parse(process.argv);
 
-// dispay the usage
+// display the usage
 if (!program.args.length && program.args.length < 2) program.help();

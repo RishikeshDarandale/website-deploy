@@ -1,11 +1,17 @@
 #!/usr/bin/env node
 
-const program = require('commander');
+const program = require("commander");
 
 // lambda command
 program
-  .name('lambda')
-  .command('build <outputZipFileName>', 'creates the build file for AWS lambda deployment')
-  .command('update <functionName> <zipFilePath>', 'Update the lambda function code')
-  .command('version', 'Displays the currnt lambda function code version')
+  .name("lambda")
+  .command(
+    "build <outputZipFileName>",
+    "creates the build file for AWS lambda deployment",
+  )
+  .command(
+    "update <functionName> <zipFilePath>",
+    "Update the lambda function code",
+  )
+  .command("version", "Displays the currnt lambda function code version")
   .parse(process.argv);

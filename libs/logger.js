@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-const chalk = require('chalk');
+const chalk = require("chalk");
 
 /**
  * A console logger utility class
@@ -14,7 +14,7 @@ class Logger {
    * @param {String} message A message to be displayed
    */
   info(message) {
-    console.log(chalk.cyan('INFO: ' + message));
+    console.log(chalk.cyan("INFO: " + message));
   }
   /**
    * log warn log message
@@ -22,7 +22,7 @@ class Logger {
    * @param {String} message A message to be displayed
    */
   warn(message) {
-    console.log(chalk.yellow('WARN: ' + message));
+    console.log(chalk.yellow("WARN: " + message));
   }
   /**
    * log debug log message
@@ -30,7 +30,7 @@ class Logger {
    * @param {String} message A message to be displayed
    */
   debug(message) {
-    console.log(chalk.black.bgWhite('DEBUG: ' + message));
+    console.log(chalk.black.bgWhite("DEBUG: " + message));
   }
   /**
    * log error log message
@@ -38,7 +38,7 @@ class Logger {
    * @param {String} message A message to be displayed
    */
   error(message) {
-    console.log(chalk.red('ERROR: ' + message));
+    console.log(chalk.red("ERROR: " + message));
   }
 }
 
