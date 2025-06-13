@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 
-const program = require("commander");
-const AWS = require("aws-sdk");
+const { Command } = require("commander");
+const { LambdaClient } = require("@aws-sdk/client-lambda");
+const { fromNodeProviderChain } = require("@aws-sdk/credential-providers");
 const Logger = require("../libs/logger.js");
 const LambdaDeploy = require("../libs/lambda-deploy.js");
 
 const logger = new Logger();
+const program = new Command();
 
 // deploy command
 program
@@ -20,15 +22,18 @@ program
     10,
   )
   .action(function (functionName, options) {
-    AWS.config.update({ region: options.region });
     if (options.profile !== undefined) {
-      let credentials = new AWS.SharedIniFileCredentials({
+      credentials = fromNodeProviderChain({
         profile: options.profile,
       });
-      AWS.config.credentials = credentials;
+    } else {
+      credentials = fromNodeProviderChain();
     }
-    let lambda = new AWS.Lambda();
-    let lambdaDeploy = new LambdaDeploy(lambda);
+    const client = new LambdaClient({
+      region: options.region,
+      credentials,
+    });
+    let lambdaDeploy = new LambdaDeploy(client);
     try {
       lambdaDeploy.versions(functionName, options).then(function (versions) {
         if (options.debug) {

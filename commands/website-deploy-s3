@@ -1,11 +1,14 @@
 #!/usr/bin/env node
 
-const program = require("commander");
+const { Command } = require("commander");
 const AWS = require("aws-sdk");
+const { S3Client } = require("@aws-sdk/client-s3");
+const { fromNodeProviderChain } = require("@aws-sdk/credential-providers");
 const S3Deploy = require("../libs/s3-deploy.js");
 const Logger = require("../libs/logger.js");
 
 const logger = new Logger();
+const program = new Command();
 
 // deploy command
 program
@@ -23,15 +26,19 @@ program
     const message =
       "Deploying from " + srcDirectory + " to s3 bucket " + bucketName;
     logger.info(message);
-    AWS.config.update({ region: options.region });
+    let credentials;
     if (options.profile !== undefined) {
-      let credentials = new AWS.SharedIniFileCredentials({
+      credentials = fromNodeProviderChain({
         profile: options.profile,
       });
-      AWS.config.credentials = credentials;
+    } else {
+      credentials = fromNodeProviderChain();
     }
-    let s3 = new AWS.S3();
-    let s3deploy = new S3Deploy(s3);
+    const client = new S3Client({
+      region: options.region,
+      credentials,
+    });
+    let s3deploy = new S3Deploy(client);
     try {
       s3deploy.syncBucket(srcDirectory, bucketName, options);
     } catch (exception) {

@@ -1,11 +1,17 @@
 "use strict";
 
-const path = require("path");
-const fs = require("fs");
-const crypto = require("crypto");
-const Logger = require("./logger.js");
+const path = require("node:path");
+const fs = require("node:fs");
+const crypto = require("node:crypto");
+const os = require("node:os");
+const {
+  ListObjectsV2Command,
+  DeleteObjectCommand,
+  PutObjectCommand,
+  HeadObjectCommand,
+} = require("@aws-sdk/client-s3");
 const mime = require("mime");
-const os = require("os");
+const Logger = require("./logger.js");
 
 const logger = new Logger();
 const platform = os.platform();
@@ -114,7 +120,8 @@ class S3Deploy {
                 Key: key,
               };
               try {
-                let data = await this.s3.deleteObject(params).promise();
+                const command = new DeleteObjectCommand(params);
+                const data = await this.s3.send(command);
                 if (options.debug) {
                   logger.debug(
                     "Delete response:" + JSON.stringify(data, null, 2),
@@ -153,7 +160,8 @@ class S3Deploy {
    */
   async exists(params, file) {
     try {
-      let data = await this.s3.headObject(params).promise();
+      const command = new HeadObjectCommand(params);
+      const data = await this.s3.send(command);
       const md5LocalFile = crypto
         .createHash("md5")
         .update(fs.readFileSync(file, "utf8"))
@@ -180,7 +188,8 @@ class S3Deploy {
    */
   async copy(params) {
     try {
-      let data = await this.s3.putObject(params).promise();
+      const command = new PutObjectCommand(params);
+      const data = await this.s3.send(command);
       if (data.ETag) {
         logger.info("File " + params.Key + " has been copied successfully.");
       }
@@ -198,7 +207,8 @@ class S3Deploy {
    * @param {Array}  keys An array with all keys
    */
   async ls(params, keys) {
-    const response = await this.s3.listObjectsV2(params).promise();
+    const command = new ListObjectsV2Command(params);
+    const response = await client.send(command);
     response.Contents.forEach((obj) => keys.push(obj.Key));
 
     if (response.IsTruncated) {

@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 
 const fs = require("fs");
-const program = require("commander");
+const { Command } = require("commander");
 const Logger = require("../libs/logger.js");
 const zip = require("bestzip");
 
 const logger = new Logger();
+const program = new Command();
 
 /**
  * callback to collect the multiple instances of same argument options

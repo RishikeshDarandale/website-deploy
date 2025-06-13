@@ -25,14 +25,18 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@aws-sdk/client-cloudfront": "^3.828.0",
+    "@aws-sdk/client-lambda": "^3.828.0",
+    "@aws-sdk/client-s3": "^3.828.0",
+    "@aws-sdk/credential-providers": "^3.828.0",
     "aws-sdk": "^2.1443.0",
     "bestzip": "^2.2.1",
     "chalk": "^4.1.2",
     "clear": "^0.1.0",
     "clui": "^0.3.6",
-    "commander": "^5.1.0",
-    "figlet": "^1.6.0",
-    "mime": "^2.6.0"
+    "commander": "^14.0.0",
+    "figlet": "^1.8.1",
+    "mime": "^3.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",

@@ -1,11 +1,14 @@
 #!/usr/bin/env node
 
-const program = require("commander");
-const AWS = require("aws-sdk");
+const { Command } = require("commander");
+const { LambdaClient } = require("@aws-sdk/client-lambda");
+const { S3Client } = require("@aws-sdk/client-s3");
+const { fromNodeProviderChain } = require("@aws-sdk/credential-providers");
 const Logger = require("../libs/logger.js");
 const LambdaDeploy = require("../libs/lambda-deploy.js");
 
 const logger = new Logger();
+const program = new Command();
 
 // deploy command
 program
@@ -17,16 +20,22 @@ program
   .option("--prefix <filePrefix>", "S3 file prefix")
   .option("--debug", "Log extra debug information")
   .action(function (functionName, zipFilePath, options) {
-    AWS.config.update({ region: options.region });
     if (options.profile !== undefined) {
-      let credentials = new AWS.SharedIniFileCredentials({
+      credentials = fromNodeProviderChain({
         profile: options.profile,
       });
-      AWS.config.credentials = credentials;
+    } else {
+      credentials = fromNodeProviderChain();
     }
-    let lambda = new AWS.Lambda();
-    let s3 = new AWS.S3();
-    let lambdaDeploy = new LambdaDeploy(lambda, s3);
+    const lambdaClient = new LambdaClient({
+      region: options.region,
+      credentials,
+    });
+    const s3Client = new S3Client({
+      region: options.region,
+      credentials,
+    });
+    let lambdaDeploy = new LambdaDeploy(lambdaClient, s3Client);
     try {
       lambdaDeploy.update(functionName, zipFilePath, options);
     } catch (exception) {

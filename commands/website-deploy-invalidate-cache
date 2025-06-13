@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 
-const program = require("commander");
-const AWS = require("aws-sdk");
+const { Command } = require("commander");
+import { CloudFrontClient } from "@aws-sdk/client-cloudfront";
+const { fromNodeProviderChain } = require("@aws-sdk/credential-providers");
 const Logger = require("../libs/logger.js");
 const CacheInvalidate = require("../libs/cf-invalidate.js");
 
 const logger = new Logger();
+const program = new Command();
 
 /**
  * callback to collect the multiple instances of same argument options
@@ -35,15 +37,18 @@ program
   .option("--debug", "Log extra debug information")
   .action(function (cloudfrontId, options) {
     logger.info("Invalidating the cache for cloudfront id: " + cloudfrontId);
-    AWS.config.update({ region: options.region });
     if (options.profile !== undefined) {
-      let credentials = new AWS.SharedIniFileCredentials({
+      credentials = fromNodeProviderChain({
         profile: options.profile,
       });
-      AWS.config.credentials = credentials;
+    } else {
+      credentials = fromNodeProviderChain();
     }
-    let cloudfront = new AWS.CloudFront();
-    let cacheInvalidate = new CacheInvalidate(cloudfront);
+    const client = new CloudFrontClient({
+      region: options.region,
+      credentials,
+    });
+    let cacheInvalidate = new CacheInvalidate(client);
     try {
       cacheInvalidate.invalidate(cloudfrontId, options);
     } catch (exception) {

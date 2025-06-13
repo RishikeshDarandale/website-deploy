@@ -1,5 +1,6 @@
 `use strict`;
 
+const { CreateInvalidationCommand } = require("@aws-sdk/client-cloudfront");
 const Logger = require("./logger.js");
 const logger = new Logger();
 
@@ -43,7 +44,8 @@ class CacheInvalidate {
         "Submitting the request with: " + JSON.stringify(params, null, 2),
       );
     }
-    let response = await this.cloudfront.createInvalidation(params).promise();
+    const command = new CreateInvalidationCommand(params);
+    const response = await this.cloudfront.send(command);
     if (response.Invalidation) {
       logger.info(
         "Invalidation is submitted with id: " + response.Invalidation.Id,

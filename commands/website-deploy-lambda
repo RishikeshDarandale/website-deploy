@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
-const program = require("commander");
+const { Command } = require("commander");
+
+const program = new Command();
 
 // lambda command
 program
@@ -13,5 +15,5 @@ program
     "update <functionName> <zipFilePath>",
     "Update the lambda function code",
   )
-  .command("version", "Displays the currnt lambda function code version")
+  .command("version", "Displays the current lambda function code version")
   .parse(process.argv);

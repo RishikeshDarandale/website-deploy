@@ -1,10 +1,16 @@
 "use strict";
 
-const path = require("path");
-const fs = require("fs");
-const crypto = require("crypto");
+const path = require("node:path");
+const fs = require("node:fs");
+const crypto = require("node:crypto");
+const os = require("node:os");
+const {
+  GetFunctionCommand,
+  ListVersionsByFunctionCommand,
+  UpdateFunctionCodeCommand,
+} = require("@aws-sdk/client-lambda");
+const { PutObjectCommand } = require("@aws-sdk/client-s3");
 const Logger = require("./logger.js");
-const os = require("os");
 
 const logger = new Logger();
 const platform = os.platform();
@@ -80,9 +86,8 @@ class LambdaDeploy {
           params.ZipFile = zipData;
         }
         try {
-          const response = await this.lambda
-            .updateFunctionCode(params)
-            .promise();
+          const command = new UpdateFunctionCodeCommand(params);
+          const response = await this.lambda.send(command);
           if (response) {
             logger.info(
               "Updated lambda " +
@@ -122,7 +127,8 @@ class LambdaDeploy {
       FunctionName: functionName,
     };
     try {
-      const response = await this.lambda.getFunction(params).promise();
+      const command = new GetFunctionCommand(params);
+      const response = await this.lambda.send(command);
       if (response) {
         return Promise.resolve(response.Configuration.CodeSha256);
       }
@@ -150,7 +156,8 @@ class LambdaDeploy {
     }
     let list = { Versions: [], NextMarker: "" };
     try {
-      list = await this.lambda.listVersionsByFunction(params).promise();
+      const command = new ListVersionsByFunctionCommand(params);
+      list = await this.lambda.send(command);
     } catch (e) {
       console.log(`error fetching versions for ${name}: ${e.message}`);
     }
@@ -218,7 +225,8 @@ async function copy(s3, bucket, prefix, filePath) {
   };
   params.Body = fs.createReadStream(filePath);
   try {
-    const data = await s3.putObject(params).promise();
+    const command = new PutObjectCommand(params);
+    const data = await s3.send(command);
     if (data.ETag) {
       logger.info("File " + params.Key + " has been copied successfully.");
     }
